@@ -19,13 +19,21 @@ func main() {
 	/*
 	locationRepo := repository.NewLocationRepo(mongoCli)
 	locationService := usecase.NewLocationUsecase(locationRepo)
-	res := locationService.GetById(111111)
-	var lokacije domain.Location
-	decodeErr := res.Decode(&lokacije)
-	if decodeErr != nil {
-		println("ovde sam")
+
+	res, err := locationService.ContainsLocation("srb", ctx)
+	if err != nil {
+		fmt.Println(err)
 	}
-	println(lokacije.LocationId)*/
+	for _, location := range res {
+		fmt.Println(location)
+	}
+
+	res, err := locationService.ExactLocation(1, 2, ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(res) */
 
 	//postLocation test
 	/*

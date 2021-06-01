@@ -3,7 +3,10 @@ package repository
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
+	"search-service/domain"
 	"time"
 )
 
@@ -14,16 +17,45 @@ type locationRepo struct {
 
 
 type LocationRepo interface {
-	GetById(id uint64) *mongo.SingleResult
+	ContainsLocation(location string, ctx context.Context) ([]domain.Location, error)
+	ExactLocation(longitude float64, latitude float64, ctx context.Context) (domain.Location, error)
 }
 
 
-func (l locationRepo) GetById(id uint64) *mongo.SingleResult {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+func (l locationRepo) ExactLocation(longitude float64, latitude float64, ctx context.Context) (domain.Location, error) {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	location := l.collection.FindOne(ctx, bson.M{"location_id" : id})
-	return  location
+	filterLocations := l.collection.FindOne(ctx, bson.M{"longitude" : longitude, "latitude" : latitude})
+
+	var location domain.Location
+	err := filterLocations.Decode(&location)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return location, nil
+}
+
+func (l locationRepo) ContainsLocation(location string, ctx context.Context) ([]domain.Location, error) {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+
+
+	filterLocations, err := l.collection.Find(ctx, bson.M{"location" : primitive.Regex{Pattern: location, Options: "i"} })
+	if err != nil {
+		return nil, err
+	}
+
+	var locationsFiltered []domain.Location
+	if err = filterLocations.All(ctx, &locationsFiltered); err != nil {
+		return nil, err
+	}
+
+	return locationsFiltered, nil
+
 }
 
 func NewLocationRepo(db *mongo.Client) LocationRepo {

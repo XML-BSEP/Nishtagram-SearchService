@@ -23,7 +23,7 @@ func GetDbName() string {
 	return viper.GetString(`database`)
 }
 
-func NewMongoClient() (*mongo.Client, *context.Context) {
+func NewMongoClient() (*mongo.Client, context.Context) {
 	init_viper()
 
 	mongodb_uri := viper.GetString(`mongodb_uri`)
@@ -40,5 +40,5 @@ func NewMongoClient() (*mongo.Client, *context.Context) {
 
 	fmt.Println("Idemo na mars MongoDB!")
 
-	return client, &ctx
+	return client, ctx
 }

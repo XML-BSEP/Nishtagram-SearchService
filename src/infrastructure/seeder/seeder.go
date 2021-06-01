@@ -8,47 +8,47 @@ import (
 	"search-service/domain"
 )
 
-func DropDatabase(db string, mongoCli *mongo.Client, ctx *context.Context){
-	err := mongoCli.Database(db).Drop(*ctx)
+func DropDatabase(db string, mongoCli *mongo.Client, ctx context.Context){
+	err := mongoCli.Database(db).Drop(ctx)
 	if err != nil {
 		return
 	}
 }
 
-func SeedData(db string, mongoCli *mongo.Client, ctx *context.Context) {
+func SeedData(db string, mongoCli *mongo.Client, ctx context.Context) {
 	DropDatabase(db, mongoCli, ctx)
 
-	if cnt,_ := mongoCli.Database(db).Collection("locations").EstimatedDocumentCount(*ctx, nil); cnt == 0 {
+	if cnt,_ := mongoCli.Database(db).Collection("locations").EstimatedDocumentCount(ctx, nil); cnt == 0 {
 		locationCollection := mongoCli.Database(db).Collection("locations")
 		seedLocation(locationCollection, ctx)
 	}
 
-	if cnt,_ := mongoCli.Database(db).Collection("post_locations").EstimatedDocumentCount(*ctx, nil); cnt == 0 {
+	if cnt,_ := mongoCli.Database(db).Collection("post_locations").EstimatedDocumentCount(ctx, nil); cnt == 0 {
 		postLocationCollection := mongoCli.Database(db).Collection("post_locations")
 		seedPostLocations(postLocationCollection, ctx)
 	}
 
 
-	if cnt,_ := mongoCli.Database(db).Collection("post_tags").EstimatedDocumentCount(*ctx, nil); cnt == 0 {
+	if cnt,_ := mongoCli.Database(db).Collection("post_tags").EstimatedDocumentCount(ctx, nil); cnt == 0 {
 		postTags := mongoCli.Database(db).Collection("post_tags")
 		seedPostTags(postTags, ctx)
 	}
 
 }
 
-func seedPostTags(tags *mongo.Collection, ctx *context.Context) {
-	_, err := tags.InsertMany(*ctx, []interface{} {
+func seedPostTags(tags *mongo.Collection, ctx context.Context) {
+	_, err := tags.InsertMany(ctx, []interface{} {
 		bson.D{
-			{"post_id", 1231},
-			{"hashtag_id", 12311},
+			{"post_id", "123451"},
+			{"hashtag", "bff"},
 		},
 		bson.D{
-			{"post_id", 1232},
-			{"hashtag_id", 12322},
+			{"post_id", "123452"},
+			{"hashtag", "tbt"},
 		},
 		bson.D{
-			{"post_id", 1233},
-			{"hashtag_id", 12333},
+			{"post_id", "123453"},
+			{"hashtag", "idegasnamax"},
 		},
 	})
 
@@ -58,33 +58,23 @@ func seedPostTags(tags *mongo.Collection, ctx *context.Context) {
 }
 
 
-func seedLocation(locationCollection *mongo.Collection, ctx *context.Context) {
+func seedLocation(locationCollection *mongo.Collection, ctx context.Context) {
 
-	_, err := locationCollection.InsertMany(*ctx, []interface{} {
+	_, err := locationCollection.InsertMany(ctx, []interface{} {
 		bson.D{
-			{"location_id", 111111},
+			{"location", "Cara Dušana 5, Novi Sad, Srbija"},
 			{"longitude", 50},
 			{"latitude", 60},
 		},
 		bson.D{
-			{"location_id", 111112},
+			{"location", "Hadži Ruvimova 10, Novi Sad, Srbija"},
 			{"longitude", 500},
 			{"latitude", 600},
 		},
 		bson.D{
-			{"location_id", 111113},
-			{"longitude", 450},
-			{"latitude", 460},
-		},
-		bson.D{
-			{"location_id", 111114},
+			{"location", " Gospodara Vučića BB, Beograd, Srbija"},
 			{"longitude", 1},
 			{"latitude", 2},
-		},
-		bson.D{
-			{"location_id", 111115},
-			{"longitude", 50.10},
-			{"latitude", 60.131212},
 		},
 
 	})
@@ -95,37 +85,25 @@ func seedLocation(locationCollection *mongo.Collection, ctx *context.Context) {
 }
 
 
-func seedPostLocations(postLocationCollection *mongo.Collection, ctx *context.Context) {
-	location1 := domain.Location{LocationId: 111111, Longitude: 50, Latitude: 60}
-	location2 := domain.Location{LocationId: 111112, Longitude: 500, Latitude: 600}
-	location3 := domain.Location{LocationId: 111113, Longitude: 450, Latitude: 460}
-	location4 := domain.Location{LocationId: 111114, Longitude: 1, Latitude: 2}
-	location5 := domain.Location{LocationId: 111115, Longitude: 50.10, Latitude: 60.131212}
+func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Context) {
+	location1 := domain.Location{Location: "Cara Dušana 5, Novi Sad, Srbija", Longitude: 50, Latitude: 60}
+	location2 := domain.Location{Location: "Hadži Ruvimova 10, Novi Sad, Srbija", Longitude: 500, Latitude: 600}
+	location3 := domain.Location{Location: " Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
 
-	_, err := postLocationCollection.InsertMany(*ctx, []interface{}{
+	_, err := postLocationCollection.InsertMany(ctx, []interface{}{
 		bson.D{
-			{"post_id", 123451},
+			{"post_id", "123451"},
 			{"location", location1},
 
 		},
 		bson.D{
-			{"post_id", 123452},
+			{"post_id", "123452"},
 			{"location", location2},
 
 		},
 		bson.D{
-			{"post_id", 123453},
+			{"post_id", "123453"},
 			{"location", location3},
-
-		},
-		bson.D{
-			{"post_id", 123454},
-			{"location", location4},
-
-		},
-		bson.D{
-			{"post_id", 123455},
-			{"location", location5},
 
 		},
 	})

@@ -1,7 +1,8 @@
 package usecase
 
 import (
-	"go.mongodb.org/mongo-driver/mongo"
+	"context"
+	"search-service/domain"
 	"search-service/repository"
 )
 
@@ -9,13 +10,21 @@ type locationUsecase struct {
 	LocationRepo repository.LocationRepo
 }
 
+
 type LocationUsecase interface {
-	GetById(id uint64) *mongo.SingleResult
+	ContainsLocation(location string, ctx context.Context) ([]domain.Location, error)
+	ExactLocation(longitude float64, latitude float64, ctx context.Context) (domain.Location, error)
 }
 
-func (l locationUsecase) GetById(id uint64) *mongo.SingleResult {
-	return l.LocationRepo.GetById(id)
+
+func (l locationUsecase) ExactLocation(longitude float64, latitude float64, ctx context.Context) (domain.Location, error) {
+	return  l.LocationRepo.ExactLocation(longitude, latitude, ctx)
 }
+
+func (l locationUsecase) ContainsLocation(location string, ctx context.Context) ([]domain.Location, error) {
+	return  l.LocationRepo.ContainsLocation(location, ctx)
+}
+
 
 func NewLocationUsecase(repo repository.LocationRepo) LocationUsecase {
 	return &locationUsecase{ LocationRepo: repo}
