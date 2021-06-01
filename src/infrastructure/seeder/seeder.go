@@ -39,15 +39,23 @@ func SeedData(db string, mongoCli *mongo.Client, ctx context.Context) {
 func seedPostTags(tags *mongo.Collection, ctx context.Context) {
 	_, err := tags.InsertMany(ctx, []interface{} {
 		bson.D{
-			{"post_id", "123451"},
-			{"hashtag", "bff"},
-		},
-		bson.D{
-			{"post_id", "123452"},
+			{"post_id", "4752f49f-3011-44af-9c62-2a6f4086233d"},
 			{"hashtag", "tbt"},
 		},
 		bson.D{
-			{"post_id", "123453"},
+			{"post_id", "d459e0f2-ab61-48e8-a593-29933ce99525"},
+			{"hashtag", "idegasnamax"},
+		},
+		bson.D{
+			{"post_id", "4752f49f-3011-44af-9c62-2a6f4086233d"},
+			{"hashtag", "idegasnamax"},
+		},
+		bson.D{
+			{"post_id", "1ea5b7bc-94eb-40c0-98fd-7858e197e3b2"},
+			{"hashtag", "idegasnamax"},
+		},
+		bson.D{
+			{"post_id", "adfee6f4-fe45-40ad-8f8e-760ec861a35e"},
 			{"hashtag", "idegasnamax"},
 		},
 	})
@@ -88,21 +96,26 @@ func seedLocation(locationCollection *mongo.Collection, ctx context.Context) {
 func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Context) {
 	location1 := domain.Location{Location: "Cara Dušana 5, Novi Sad, Srbija", Longitude: 50, Latitude: 60}
 	location2 := domain.Location{Location: "Hadži Ruvimova 10, Novi Sad, Srbija", Longitude: 500, Latitude: 600}
-	location3 := domain.Location{Location: " Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
+	location3 := domain.Location{Location: "Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
 
 	_, err := postLocationCollection.InsertMany(ctx, []interface{}{
 		bson.D{
-			{"post_id", "123451"},
+			{"post_id", "4752f49f-3011-44af-9c62-2a6f4086233d"},
 			{"location", location1},
 
 		},
 		bson.D{
-			{"post_id", "123452"},
+			{"post_id", "d459e0f2-ab61-48e8-a593-29933ce99525"},
 			{"location", location2},
 
 		},
 		bson.D{
-			{"post_id", "123453"},
+			{"post_id", "1ea5b7bc-94eb-40c0-98fd-7858e197e3b2"},
+			{"location", location3},
+
+		},
+		bson.D{
+			{"post_id", "adfee6f4-fe45-40ad-8f8e-760ec861a35e"},
 			{"location", location3},
 
 		},

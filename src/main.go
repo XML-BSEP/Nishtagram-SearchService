@@ -39,13 +39,21 @@ func main() {
 	/*
 	postLocationRepo := repository.NewPostLocationRepo(mongoCli)
 	postLocationService := usecase.NewPostLocationUsecase(postLocationRepo)
-	res := postLocationService.GetById(123451)
-	var postLoc domain.PostLocation
-	decodeErr := res.Decode(&postLoc)
-	if decodeErr != nil {
-		println("ovde sam")
+	//res, err := postLocationService.GetPostsByExactLocation(1, 2, ctx)
+
+	//if err != nil {
+//		fmt.Println(err)
+//	}
+
+	res, err := postLocationService.GetPostsByLocationContains("beograd", ctx)
+	if err != nil {
+		fmt.Println(err)
 	}
-	println(postLoc.PostId, postLoc.Location.LocationId)*/
+	for _, post := range res {
+		fmt.Println(post)
+	}*/
+
+
 
 	//postTag test
 	/*
