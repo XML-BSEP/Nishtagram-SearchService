@@ -39,16 +39,16 @@ func SeedData(db string, mongoCli *mongo.Client, ctx *context.Context) {
 func seedPostTags(tags *mongo.Collection, ctx *context.Context) {
 	_, err := tags.InsertMany(*ctx, []interface{} {
 		bson.D{
-			{"post_id", "1231"},
-			{"hashtag_id", "1231"},
+			{"post_id", 1231},
+			{"hashtag_id", 1231},
 		},
 		bson.D{
-			{"post_id", "1232"},
-			{"hashtag_id", "1232"},
+			{"post_id", 1232},
+			{"hashtag_id", 1232},
 		},
 		bson.D{
-			{"post_id", "1233"},
-			{"hashtag_id", "1233"},
+			{"post_id", 1233},
+			{"hashtag_id", 1233},
 		},
 	})
 
@@ -62,29 +62,29 @@ func seedLocation(locationCollection *mongo.Collection, ctx *context.Context) {
 
 	_, err := locationCollection.InsertMany(*ctx, []interface{} {
 		bson.D{
-			{"location_id", "111111"},
-			{"longitude", "50"},
-			{"latitude", "60"},
+			{"location_id", 111111},
+			{"longitude", 50},
+			{"latitude", 60},
 		},
 		bson.D{
-			{"location_id", "111112"},
-			{"longitude", "500"},
-			{"latitude", "600"},
+			{"location_id", 111112},
+			{"longitude", 500},
+			{"latitude", 600},
 		},
 		bson.D{
-			{"location_id", "111113"},
-			{"longitude", "450"},
-			{"latitude", "460"},
+			{"location_id", 111113},
+			{"longitude", 450},
+			{"latitude", 460},
 		},
 		bson.D{
-			{"location_id", "111114"},
-			{"longitude", "1"},
-			{"latitude", "2"},
+			{"location_id", 111114},
+			{"longitude", 1},
+			{"latitude", 2},
 		},
 		bson.D{
-			{"location_id", "111115"},
-			{"longitude", "50.10"},
-			{"latitude", "60.131212"},
+			{"location_id", 111115},
+			{"longitude", 50.10},
+			{"latitude", 60.131212},
 		},
 
 	})
@@ -104,27 +104,27 @@ func seedPostLocations(postLocationCollection *mongo.Collection, ctx *context.Co
 
 	_, err := postLocationCollection.InsertMany(*ctx, []interface{}{
 		bson.D{
-			{"post_id", "123451"},
+			{"post_id", 123451},
 			{"location", location1},
 
 		},
 		bson.D{
-			{"post_id", "123452"},
+			{"post_id", 123452},
 			{"location", location2},
 
 		},
 		bson.D{
-			{"post_id", "123453"},
+			{"post_id", 123453},
 			{"location", location3},
 
 		},
 		bson.D{
-			{"post_id", "123454"},
+			{"post_id", 123454},
 			{"location", location4},
 
 		},
 		bson.D{
-			{"post_id", "123455"},
+			{"post_id", 123455},
 			{"location", location5},
 
 		},
