@@ -40,15 +40,15 @@ func seedPostTags(tags *mongo.Collection, ctx *context.Context) {
 	_, err := tags.InsertMany(*ctx, []interface{} {
 		bson.D{
 			{"post_id", 1231},
-			{"hashtag_id", 1231},
+			{"hashtag_id", 12311},
 		},
 		bson.D{
 			{"post_id", 1232},
-			{"hashtag_id", 1232},
+			{"hashtag_id", 12322},
 		},
 		bson.D{
 			{"post_id", 1233},
-			{"hashtag_id", 1233},
+			{"hashtag_id", 12333},
 		},
 	})
 
