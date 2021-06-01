@@ -42,8 +42,6 @@ func (l locationRepo) ContainsLocation(location string, ctx context.Context) ([]
 	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-
-
 	filterLocations, err := l.collection.Find(ctx, bson.M{"location" : primitive.Regex{Pattern: location, Options: "i"} })
 	if err != nil {
 		return nil, err

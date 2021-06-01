@@ -1,12 +1,15 @@
 package repository
 
 import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"search-service/domain"
+	"time"
 )
 
 type PostTagRepo interface {
-	GetByPostId(id string) *mongo.SingleResult
-	ContainsHashTag(hashTag string) *mongo.SingleResult
+	GetPostsByHashTag(hashTag string, ctx context.Context) ([]string, error)
 }
 
 type postTagRepo struct {
@@ -14,12 +17,22 @@ type postTagRepo struct {
 	db *mongo.Client
 }
 
-func (p postTagRepo) GetByPostId(id string) *mongo.SingleResult {
-	panic("implement me")
-}
+func (p postTagRepo) GetPostsByHashTag(hashTag string, ctx context.Context) ([]string, error) {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-func (p postTagRepo) ContainsHashTag(hashTag string) *mongo.SingleResult {
-	panic("implement me")
+	filterPostst, err := p.collection.Find(ctx, bson.M{"hashtag" : hashTag })
+
+	var postsFiltered []domain.PostLocation
+	if err = filterPostst.All(ctx, &postsFiltered); err != nil {
+		return nil, err
+	}
+
+	var sliceIds []string
+	for _, p := range postsFiltered {
+		sliceIds = append(sliceIds, p.PostId)
+	}
+	return sliceIds, nil
 }
 
 func NewPostTagRepo(db *mongo.Client) PostTagRepo {

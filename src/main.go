@@ -61,14 +61,13 @@ func main() {
 	postTagService := usecase.NewPostTagUseCase(postTagRepo)
 
 	//resPost := postTagService.GetByPostId(1231)
-	resTag := postTagService.GetByTagId(12322)
-	var postTag domain.PostTags
-
-	decodeErrPost := resTag.Decode(&postTag)
-	if decodeErrPost != nil {
-		println("ovde sam")
+	resTag, err := postTagService.GetPostsByHashTag("tbt", ctx)
+	if err != nil {
+		fmt.Println(err)
 	}
-	println(postTag.PostId)*/
+	for _, post := range resTag {
+		fmt.Println(post)
+	}*/
 
 
 	g := gin.Default()
