@@ -21,9 +21,12 @@ type LocationHandler interface {
 
 
 func (l *locationHandler) GetLocationsByContains(ctx *gin.Context) {
-	var locationDto dto.LocationDTO
+	location := struct {
+		Location string
+	}{}
 	decoder := json.NewDecoder(ctx.Request.Body)
-	dec_err := decoder.Decode(&locationDto)
+	dec_err := decoder.Decode(&location)
+
 
 	if dec_err != nil {
 		ctx.JSON(http.StatusBadRequest, "Location decoding error")
@@ -31,7 +34,7 @@ func (l *locationHandler) GetLocationsByContains(ctx *gin.Context) {
 		return
 	}
 
-	locations, err := l.LocationUseCase.ContainsLocation(locationDto.Location, ctx)
+	locations, err := l.LocationUseCase.ContainsLocation(location.Location, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "No locations with that search parameter")
 		ctx.Abort()

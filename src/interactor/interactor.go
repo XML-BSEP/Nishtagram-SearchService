@@ -11,6 +11,8 @@ type interactor struct {
 	db *mongo.Client
 }
 
+
+
 type Interactor interface {
 	NewLocationRepository() repository.LocationRepo
 	NewPostLocationRepository() repository.PostLocationRepo
@@ -23,6 +25,8 @@ type Interactor interface {
 	NewAppHandler() AppHandler
 
 	NewLocationHandler() handler.LocationHandler
+	NewPostLocationHandler() handler.PostLocationHandler
+	NewPostTagHandler() handler.PostTagHandler
 
 }
 
@@ -32,10 +36,14 @@ func NewInteractor(db *mongo.Client) Interactor {
 
 type appHandler struct {
 	handler.LocationHandler
+	handler.PostLocationHandler
+	handler.PostTagHandler
 }
 
 type AppHandler interface {
 	handler.LocationHandler
+	handler.PostLocationHandler
+	handler.PostTagHandler
 }
 
 func (i *interactor) NewLocationRepository() repository.LocationRepo {
@@ -66,10 +74,22 @@ func (i *interactor) NewLocationHandler() handler.LocationHandler {
 	return handler.NewLocationHandler(i.NewLocationUseCase())
 }
 
+func (i *interactor) NewPostLocationHandler() handler.PostLocationHandler {
+	return handler.NewPostLocationHandler(i.NewPostLocationUseCase())
+}
+
+func (i *interactor) NewPostTagHandler() handler.PostTagHandler {
+	return handler.NewPostTagHandler(i.NewPostTagUseCase())
+}
+
 func (i *interactor) NewAppHandler() AppHandler{
 	appHandler := &appHandler{}
 	appHandler.LocationHandler = i.NewLocationHandler()
+	appHandler.PostLocationHandler = i.NewPostLocationHandler()
+	appHandler.PostTagHandler = i.NewPostTagHandler()
 
 	return appHandler
 }
+
+
 

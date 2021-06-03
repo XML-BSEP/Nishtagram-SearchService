@@ -32,17 +32,6 @@ func (l locationRepo) ExactLocation(longitude float64, latitude float64, ctx con
 
 	return location, nil
 
-
-
-	/*
-	var location domain.Location
-	err := filterLocations.Decode(&location)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return location, nil*/
 }
 
 func (l locationRepo) ContainsLocation(location string, ctx context.Context) ([]domain.Location, error) {
