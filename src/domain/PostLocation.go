@@ -1,6 +1,6 @@
 package domain
 
 type PostLocation struct {
-	PostId	uint64 `json:"post_id"`
-	Location	Location `json:"location"`
+	PostId	string `bson:"post_id" json:"post_id"`
+	Location	Location `bson:"location" json:"location"`
 }

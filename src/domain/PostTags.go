@@ -1,6 +1,6 @@
 package domain
 
 type PostTags struct {
-	PostId	uint64 `json:"post_id"`
-	HashtagId	uint64 `json:"hashtag_id"`
+	PostId	string `bson:"post_id" json:"post_id"`
+	Hashtag	string `bson:"hashtag" json:"hashtag"`
 }

@@ -1,7 +1,7 @@
 package domain
 
 type Location struct {
-	LocationId	uint64 `json:"location_id"`
-	Longitude	float64 `json:"longitude"`
-	Latitude	float64 `json:"latitude"`
+	Location	string `bson:"location" json:"location"`
+	Longitude	float64 `bson:"longitude" json:"longitude"`
+	Latitude	float64 `bson:"latitude" json:"latitude"`
 }
