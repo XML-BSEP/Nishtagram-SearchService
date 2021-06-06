@@ -5,7 +5,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 	"search-service/domain"
 	"time"
 )
@@ -25,17 +24,14 @@ type LocationRepo interface {
 func (l locationRepo) ExactLocation(longitude float64, latitude float64, ctx context.Context) (domain.Location, error) {
 	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-
-	filterLocations := l.collection.FindOne(ctx, bson.M{"longitude" : longitude, "latitude" : latitude})
-
-	var location domain.Location
-	err := filterLocations.Decode(&location)
-
+	var  location domain.Location
+	err := l.collection.FindOne(ctx, bson.M{"longitude" : longitude, "latitude" : latitude}).Decode(&location)
 	if err != nil {
-		log.Fatal(err)
+		return location, err
 	}
 
 	return location, nil
+
 }
 
 func (l locationRepo) ContainsLocation(location string, ctx context.Context) ([]domain.Location, error) {
