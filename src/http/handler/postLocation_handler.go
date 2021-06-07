@@ -20,20 +20,11 @@ type PostLocationHandler interface {
 }
 
 func (p *postLocationHandler) GetPostsByLocationContains(ctx *gin.Context) {
-	location := struct {
-		Location string
-	}{}
 
-	decoder := json.NewDecoder(ctx.Request.Body)
-	dec_err := decoder.Decode(&location)
 
-	if dec_err != nil {
-		ctx.JSON(http.StatusBadRequest, "Post location decoding error")
-		ctx.Abort()
-		return
-	}
+	location := ctx.Request.URL.Query().Get("location")
 
-	postsIds, err := p.PostLocationUseCase.GetPostsByLocationContains(location.Location, ctx)
+	postsIds, err := p.PostLocationUseCase.GetPostsByLocationContains(location, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "No posts with that search parameter")
 		ctx.Abort()

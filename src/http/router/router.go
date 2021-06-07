@@ -12,7 +12,8 @@ func NewRouter(handler interactor.AppHandler) *gin.Engine {
 	router.GET("/getExactLocation", handler.GetExactLocation)
 	router.GET("/getPostsByLocationContaining", handler.GetPostsByLocationContains)
 	router.GET("/getPostsByExactLocation", handler.GetPostsByExactLocation)
-	router.GET("/getPostsByTag", handler.GetPostsByHashTag)
+	router.GET("/getPostsByHashTag", handler.GetPostsByHashTag)
+	router.POST("/insertPost", handler.InsertPost)
 
 	return router
 }

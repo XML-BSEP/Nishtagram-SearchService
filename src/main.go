@@ -20,13 +20,7 @@ func main() {
 	appHandler := interactor.NewAppHandler()
 
 	router := router2.NewRouter(appHandler)
-	router.Run("localhost:8087")
 
-
-
-	//g := gin.Default()
-	//g.Run("localhost:8087")
-
-
+	router.RunTLS("localhost:8087", "../certificate/cert.pem", "../certificate/key.pem")
 
 }

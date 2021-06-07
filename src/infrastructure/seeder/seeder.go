@@ -94,9 +94,9 @@ func seedLocation(locationCollection *mongo.Collection, ctx context.Context) {
 
 
 func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Context) {
-	location1 := domain.Location{Location: "Cara Dušana 5, Novi Sad, Srbija", Longitude: 50, Latitude: 60}
-	location2 := domain.Location{Location: "Hadži Ruvimova 10, Novi Sad, Srbija", Longitude: 500, Latitude: 600}
-	location3 := domain.Location{Location: "Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
+	location1 := domain.Location{LocationName: "Cara Dušana 5, Novi Sad, Srbija", Longitude: 50, Latitude: 60}
+	location2 := domain.Location{LocationName: "Hadži Ruvimova 10, Novi Sad, Srbija", Longitude: 500, Latitude: 600}
+	location3 := domain.Location{LocationName: "Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
 
 	_, err := postLocationCollection.InsertMany(ctx, []interface{}{
 		bson.D{

@@ -15,13 +15,14 @@ type postLocationRepo struct {
 }
 
 
-
 type PostLocationRepo interface {
 	GetPostsByExactLocation(longitude float64, latitude float64 , ctx context.Context) ([]string, error)
 	GetPostsByLocationContains(location string, ctx context.Context) ([]string, error)
+	Create(postLocation domain.PostLocation, ctx context.Context) error
+	GetById(id string, location string, ctx context.Context) (*domain.PostLocation, error)
 }
 
-func (p postLocationRepo) GetPostsByLocationContains(location string, ctx context.Context) ([]string, error) {
+func (p *postLocationRepo) GetPostsByLocationContains(location string, ctx context.Context) ([]string, error) {
 	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -61,6 +62,49 @@ func (p postLocationRepo) GetPostsByExactLocation(longitude float64, latitude fl
 		sliceIds = append(sliceIds, p.PostId)
 	}
 	return sliceIds, nil
+}
+
+func (p *postLocationRepo) Create(postLocation domain.PostLocation, ctx context.Context) error {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	value, err := p.GetById(postLocation.PostId, postLocation.Location.LocationName, ctx)
+
+	if err == nil {
+		filter := bson.M{"_id": value.ID}
+		_, err := p.collection.ReplaceOne(ctx, filter, postLocation)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	newObj := bson.D{
+		{"post_id", postLocation.PostId},
+		{"user_id", postLocation.UserId},
+		{"location", domain.Location{
+			LocationName: postLocation.Location.LocationName,
+			Longitude: postLocation.Location.Longitude,
+			Latitude:  postLocation.Location.Latitude,
+		}},
+
+	}
+	_, err = p.collection.InsertOne(ctx, newObj)
+	return err
+
+}
+
+
+func (p *postLocationRepo) GetById(id string, location string, ctx context.Context) (*domain.PostLocation, error) {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var postLocation *domain.PostLocation
+	err := p.collection.FindOne(ctx, bson.M{"post_id" : id}).Decode(&postLocation)
+	if err != nil {
+		return postLocation, err
+	}
+
+	return postLocation, nil
 }
 
 func NewPostLocationRepo(db *mongo.Client) PostLocationRepo {
