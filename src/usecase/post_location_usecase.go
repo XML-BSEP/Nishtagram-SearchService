@@ -48,13 +48,13 @@ func (p postLocationUsecase) GetPostsAndLocationByLocationContaining(location st
 			return nil, err
 		}
 
-		var postLocationIds []string
+		var postProfileLocationIds []dto.PostProfileId
 		for _, postLName := range *postLocationByName { //jedan iz beograd cara lazara
-			postLocationIds = append(postLocationIds, postLName.PostId)
+			postProfileLocationIds = append(postProfileLocationIds, dto.PostProfileId{PostId: postLName.PostId, ProfileId: postLName.ProfileId})
 		}
 
 		var postLocation dto.PostLocationsDTO
-		postLocation.PostId = postLocationIds
+		postLocation.PostProfileId = postProfileLocationIds
 		postLocation.Location = post.Location.Location
 		postLocationsDTOs = AppendIfMissing(postLocationsDTOs, postLocation)
 	}
@@ -70,8 +70,8 @@ func NewPostLocationUsecase(repo repository.PostLocationRepo) PostLocationUsecas
 func AppendIfMissing(slice []dto.PostLocationsDTO, i dto.PostLocationsDTO) []dto.PostLocationsDTO {
 	for _, ele := range slice {
 
-		for _, elem := range ele.PostId {
-			for _, elem2 := range i.PostId {
+		for _, elem := range ele.PostProfileId {
+			for _, elem2 := range i.PostProfileId {
 				if elem == elem2 {
 					return slice
 				}
