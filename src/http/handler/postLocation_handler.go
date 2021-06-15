@@ -20,31 +20,30 @@ type PostLocationHandler interface {
 }
 
 func (p *postLocationHandler) GetPostsByLocationContains(ctx *gin.Context) {
-	location := struct {
-		Location string
-	}{}
 
-	decoder := json.NewDecoder(ctx.Request.Body)
-	dec_err := decoder.Decode(&location)
+	searchedLocation := ctx.Request.URL.Query().Get("searchedLocation")
 
-	if dec_err != nil {
-		ctx.JSON(http.StatusBadRequest, "Post location decoding error")
+/*
+	postsIds, err := p.PostLocationUseCase.GetPostsByLocationContains(searchedLocation, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "No posts with that search parameter")
 		ctx.Abort()
 		return
 	}
-
-	postsIds, err := p.PostLocationUseCase.GetPostsByLocationContains(location.Location, ctx)
+*/
+	posts, err := p.PostLocationUseCase.GetPostsAndLocationByLocationContaining(searchedLocation, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "No posts with that search parameter")
 		ctx.Abort()
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": postsIds})
+
+	ctx.JSON(http.StatusOK, posts)
 }
 
 func (p *postLocationHandler) GetPostsByExactLocation(ctx *gin.Context) {
-	var postLocationDto dto.PostLocationDTO
+	var postLocationDto dto.PostLocationExactDTO
 	decoder := json.NewDecoder(ctx.Request.Body)
 	dec_err := decoder.Decode(&postLocationDto)
 
@@ -54,7 +53,8 @@ func (p *postLocationHandler) GetPostsByExactLocation(ctx *gin.Context) {
 		return
 	}
 
-	postLocations, err := p.PostLocationUseCase.GetPostsByExactLocation(postLocationDto.Location.Latitude, postLocationDto.Location.Longitude, ctx)
+
+	postLocations, err := p.PostLocationUseCase.GetPostsByExactLocation(postLocationDto.Latitude, postLocationDto.Longitude, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "No post locations with that longitude-latitude")
 		ctx.Abort()
