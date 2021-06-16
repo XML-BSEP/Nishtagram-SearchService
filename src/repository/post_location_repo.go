@@ -15,10 +15,11 @@ type postLocationRepo struct {
 }
 
 
-
 type PostLocationRepo interface {
 	GetPostsByExactLocation(longitude float64, latitude float64 , ctx context.Context) ([]string, error)
 	GetPostsByLocationContains(location string, ctx context.Context) ([]string, error)
+	GetPostLocationById(id string, ctx context.Context) domain.PostLocation
+	GetPostsByLocationName(location string, ctx context.Context) (*[]domain.PostLocation, error)
 }
 
 func (p postLocationRepo) GetPostsByLocationContains(location string, ctx context.Context) ([]string, error) {
@@ -62,6 +63,39 @@ func (p postLocationRepo) GetPostsByExactLocation(longitude float64, latitude fl
 	}
 	return sliceIds, nil
 }
+
+func (p postLocationRepo) GetPostLocationById(id string, ctx context.Context) domain.PostLocation {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var post domain.PostLocation
+	err := p.collection.FindOne(ctx, bson.M{"post_id" : id}).Decode(&post)
+	if err != nil {
+		return domain.PostLocation{}
+	}
+
+	return post
+}
+
+
+func (p postLocationRepo) GetPostsByLocationName(location string, ctx context.Context) (*[]domain.PostLocation, error) {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+
+	postsFiltered, err := p.collection.Find(ctx, bson.M{"location.location" : location})
+	if err != nil {
+		return nil, err
+	}
+
+	var posts []domain.PostLocation
+	if err = postsFiltered.All(ctx, &posts); err != nil {
+		return nil, err
+	}
+
+	return &posts, nil
+}
+
 
 func NewPostLocationRepo(db *mongo.Client) PostLocationRepo {
 	return &postLocationRepo {
