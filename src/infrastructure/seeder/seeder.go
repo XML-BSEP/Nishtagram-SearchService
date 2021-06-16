@@ -40,22 +40,27 @@ func seedPostTags(tags *mongo.Collection, ctx context.Context) {
 	_, err := tags.InsertMany(ctx, []interface{} {
 		bson.D{
 			{"post_id", "4752f49f-3011-44af-9c62-2a6f4086233d"},
+			{"profile_id", "e2b5f92e-c31b-11eb-8529-0242ac130003"},
 			{"hashtag", "tbt"},
 		},
 		bson.D{
 			{"post_id", "d459e0f2-ab61-48e8-a593-29933ce99525"},
+			{"profile_id", "424935b1-766c-4f99-b306-9263731518bc"},
 			{"hashtag", "idegasnamax"},
 		},
 		bson.D{
 			{"post_id", "4752f49f-3011-44af-9c62-2a6f4086233d"},
+			{"profile_id", "e2b5f92e-c31b-11eb-8529-0242ac130003"},
 			{"hashtag", "idegasnamax"},
 		},
 		bson.D{
 			{"post_id", "1ea5b7bc-94eb-40c0-98fd-7858e197e3b2"},
+			{"profile_id", "a2c2f993-dc32-4a82-82ed-a5f6866f7d03"},
 			{"hashtag", "idegasnamax"},
 		},
 		bson.D{
 			{"post_id", "adfee6f4-fe45-40ad-8f8e-760ec861a35e"},
+			{"profile_id", "43420055-3174-4c2a-9823-a8f060d644c3"},
 			{"hashtag", "idegasnamax"},
 		},
 	})
