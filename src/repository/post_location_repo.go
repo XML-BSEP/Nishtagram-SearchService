@@ -20,6 +20,7 @@ type PostLocationRepo interface {
 	GetPostsByLocationContains(location string, ctx context.Context) ([]string, error)
 	GetPostLocationById(id string, ctx context.Context) domain.PostLocation
 	GetPostsByLocationName(location string, ctx context.Context) (*[]domain.PostLocation, error)
+	SaveNewPostLocation(location domain.PostLocation, ctx context.Context) error
 }
 
 func (p postLocationRepo) GetPostsByLocationContains(location string, ctx context.Context) ([]string, error) {
@@ -75,6 +76,19 @@ func (p postLocationRepo) GetPostLocationById(id string, ctx context.Context) do
 	}
 
 	return post
+}
+
+
+func (p postLocationRepo) SaveNewPostLocation(location domain.PostLocation, ctx context.Context) error {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_, err := p.collection.InsertOne(ctx, location)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 

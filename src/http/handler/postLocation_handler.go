@@ -13,9 +13,11 @@ type postLocationHandler struct {
 }
 
 
+
 type PostLocationHandler interface {
 	GetPostsByExactLocation(ctx *gin.Context)
 	GetPostsByLocationContains(ctx *gin.Context)
+	SaveNewPostLocation(ctx *gin.Context)
 
 }
 
@@ -62,6 +64,25 @@ func (p *postLocationHandler) GetPostsByExactLocation(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"data" : postLocations})
+}
+
+func (p *postLocationHandler) SaveNewPostLocation(ctx *gin.Context) {
+	var newLocationPost dto.PostLocationProfileDTO
+	err := json.NewDecoder(ctx.Request.Body).Decode(&newLocationPost)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "Decoding error")
+		ctx.Abort()
+		return
+	}
+
+	err = p.PostLocationUseCase.SaveNewPostLocation(newLocationPost, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest,gin.H{"message" : "Failed to insert"})
+		ctx.Abort()
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message" : "Inserted"})
 }
 
 func NewPostLocationHandler(locationUsecase usecase.PostLocationUsecase) PostLocationHandler {

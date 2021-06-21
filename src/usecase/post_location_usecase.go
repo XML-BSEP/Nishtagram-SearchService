@@ -12,10 +12,12 @@ type postLocationUsecase struct {
 }
 
 
+
 type PostLocationUsecase interface {
 	GetPostsByExactLocation(longitude float64, latitude float64 , ctx context.Context) ([]string, error)
 	GetPostsByLocationContains(location string, ctx context.Context) ([]string, error)
 	GetPostsAndLocationByLocationContaining(location string, ctx context.Context) (*[]dto.PostLocationsDTO, error)
+	SaveNewPostLocation(location dto.PostLocationProfileDTO, ctx context.Context) error
 }
 
 func (p postLocationUsecase) GetPostsByExactLocation(longitude float64, latitude float64, ctx context.Context) ([]string, error) {
@@ -61,6 +63,20 @@ func (p postLocationUsecase) GetPostsAndLocationByLocationContaining(location st
 
 	return &postLocationsDTOs, nil
 
+}
+
+func (p postLocationUsecase) SaveNewPostLocation(location dto.PostLocationProfileDTO, ctx context.Context) error {
+	var postLocation domain.PostLocation
+	postLocation.PostId = location.PostId
+	postLocation.Location.Location = location.Location
+	postLocation.ProfileId = location.ProfileId
+
+	error := p.PostLocationRepo.SaveNewPostLocation(postLocation, ctx)
+	if error != nil {
+		return error
+	}
+
+	return nil
 }
 
 func NewPostLocationUsecase(repo repository.PostLocationRepo) PostLocationUsecase {
