@@ -10,8 +10,8 @@ import (
 )
 
 type PostTagRepo interface {
-	GetPostsByHashTag(hashTag string, ctx context.Context) ([]string, error)
-	GetPostTagById(id string, ctx context.Context) domain.PostTag
+	GetPostsByHashTag(hashTag string, ctx context.Context) ([]domain.PostTag, error)
+	GetPostTagById(id string, tag string, ctx context.Context) domain.PostTag
 	GetPostsBbyHashTagName(hashtag string, ctx context.Context) (*[]domain.PostTag, error)
 	SaveNewPostTag(location domain.PostTag, ctx context.Context) error
 }
@@ -23,34 +23,37 @@ type postTagRepo struct {
 
 
 
-func (p postTagRepo) GetPostsByHashTag(hashTag string, ctx context.Context) ([]string, error) {
+func (p postTagRepo) GetPostsByHashTag(hashTag string, ctx context.Context) ([]domain.PostTag, error) {
 	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	filterPostst, err := p.collection.Find(ctx, bson.M{"hashtag" : primitive.Regex{Pattern: hashTag, Options: "i"} })
 
-	var postsFiltered []domain.PostLocation
+	var postsFiltered []domain.PostTag
 	if err = filterPostst.All(ctx, &postsFiltered); err != nil {
 		return nil, err
 	}
 
-	var sliceIds []string
-	for _, p := range postsFiltered {
-		sliceIds = append(sliceIds, p.PostId)
-	}
-	return sliceIds, nil
+	return postsFiltered, nil
 }
 
 
-func (p postTagRepo) GetPostTagById(id string, ctx context.Context) domain.PostTag {
+func (p postTagRepo) GetPostTagById(id string, tag string, ctx context.Context) domain.PostTag {
 	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	var post domain.PostTag
-	err := p.collection.FindOne(ctx, bson.M{"post_id" : id}).Decode(&post)
+	posts, err := p.collection.Find(ctx, bson.M{"post_id" : id})
 	if err != nil {
 		return domain.PostTag{}
 	}
+
+	if err = posts.All(ctx, &posts); err != nil {
+		return domain.PostTag{}
+	}
+
+
+
 
 	return post
 }

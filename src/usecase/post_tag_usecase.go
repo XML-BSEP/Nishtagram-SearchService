@@ -22,20 +22,16 @@ func (p postTagUseCase) GetPostsByHashTag(hashTag string, ctx context.Context) (
 		return nil, err
 	}
 
-	var postTags []domain.PostTag
-	for _, postId := range postsId {
-		post := p.PostTagRepo.GetPostTagById(postId, ctx)
-		postTags = append(postTags, post)
-	}
 
 	var postTagsDTOs []dto.PostTagsDTO
-	for _, post := range postTags {
+	for _, post := range postsId {
 		postTagName, err := p.PostTagRepo.GetPostsBbyHashTagName(post.Hashtag, ctx)
 		if err != nil {
 			return nil, err
 		}
 
 		var postProfileLocationIds []dto.PostProfileId
+
 		for _, postLName := range *postTagName {
 			postProfileLocationIds = append(postProfileLocationIds, dto.PostProfileId{PostId: postLName.PostId, ProfileId: postLName.ProfileId})
 		}
@@ -43,22 +39,44 @@ func (p postTagUseCase) GetPostsByHashTag(hashTag string, ctx context.Context) (
 		var postTag dto.PostTagsDTO
 		postTag.PostProfileId = postProfileLocationIds
 		postTag.Hashtag = post.Hashtag
-		postTagsDTOs = AppendIfMissingTag(postTagsDTOs, postTag)
+		postTagsDTOs = append(postTagsDTOs, postTag)
+		//postTagsDTOs = AppendIfMissingTag(postTagsDTOs, postTag)
 	}
 
-	return &postTagsDTOs, nil
+	var retVal []dto.PostTagsDTO
+	var oneTag dto.PostTagsDTO
+	for _, p := range postTagsDTOs {
+		toAdd := true
+		for _, o := range retVal {
+			if o.Hashtag == p.Hashtag {
+				toAdd = false
+				break
+			}
+		}
+		if toAdd {
+			oneTag.Hashtag = p.Hashtag
+			oneTag.PostProfileId = p.PostProfileId
+			retVal = append(retVal, oneTag)
+		}
+	}
+
+	return &retVal, nil
 
 }
 
 func (p postTagUseCase) SaveNewPostTag(tag dto.PostTagProfileDTO, ctx context.Context) error {
-	var postTag domain.PostTag
-	postTag.PostId = tag.PostId
-	postTag.Hashtag = tag.Hashtag
-	postTag.ProfileId = tag.ProfileId
 
-	error := p.PostTagRepo.SaveNewPostTag(postTag, ctx)
-	if error != nil {
-		return error
+
+	for _, s := range tag.Hashtag {
+		var postTag domain.PostTag
+		postTag.PostId = tag.PostId
+		postTag.Hashtag = s
+		postTag.ProfileId = tag.ProfileId
+
+		error := p.PostTagRepo.SaveNewPostTag(postTag, ctx)
+		if error != nil {
+			continue
+		}
 	}
 
 	return nil
