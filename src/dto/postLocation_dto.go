@@ -13,6 +13,12 @@ type PostLocationsDTO struct {
 	Location string `bson:"location" json:"location"`
 }*/
 
+type PostLocationProfileDTO struct {
+	PostId	string `bson:"post_id" json:"post_id"`
+	Location string `bson:"location" json:"location"`
+	ProfileId string `bson:"profile_id" json:"profile_id"`
+}
+
 type PostProfileId struct {
 	PostId string `bson:"post_id" json:"post_id"`
 	ProfileId string `bson:"profile_id" json:"profile_id"`

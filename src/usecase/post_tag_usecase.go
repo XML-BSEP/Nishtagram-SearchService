@@ -9,6 +9,7 @@ import (
 
 type PostTagUsecase interface {
 	GetPostsByHashTag(hashTag string, ctx context.Context) (*[]dto.PostTagsDTO, error)
+	SaveNewPostTag(location dto.PostTagProfileDTO, ctx context.Context) error
 }
 
 type postTagUseCase struct {
@@ -47,6 +48,20 @@ func (p postTagUseCase) GetPostsByHashTag(hashTag string, ctx context.Context) (
 
 	return &postTagsDTOs, nil
 
+}
+
+func (p postTagUseCase) SaveNewPostTag(tag dto.PostTagProfileDTO, ctx context.Context) error {
+	var postTag domain.PostTag
+	postTag.PostId = tag.PostId
+	postTag.Hashtag = tag.Hashtag
+	postTag.ProfileId = tag.ProfileId
+
+	error := p.PostTagRepo.SaveNewPostTag(postTag, ctx)
+	if error != nil {
+		return error
+	}
+
+	return nil
 }
 
 func NewPostTagUseCase(repo repository.PostTagRepo) PostTagUsecase {

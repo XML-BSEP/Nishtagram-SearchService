@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"search-service/dto"
 	"search-service/usecase"
 )
 
@@ -13,6 +15,7 @@ type postTagHandler struct {
 
 type PostTagHandler interface {
 	GetPostsByHashTag(ctx *gin.Context)
+	SaveNewPostTag(ctx *gin.Context)
 }
 
 
@@ -29,6 +32,25 @@ func (p *postTagHandler) GetPostsByHashTag(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, postsIds)
+}
+
+func (p *postTagHandler) SaveNewPostTag(ctx *gin.Context) {
+	var newLocationTag dto.PostTagProfileDTO
+	err := json.NewDecoder(ctx.Request.Body).Decode(&newLocationTag)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "Decoding error")
+		ctx.Abort()
+		return
+	}
+
+	err = p.PostTagUseCase.SaveNewPostTag(newLocationTag, ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest,gin.H{"message" : "Failed to insert"})
+		ctx.Abort()
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message" : "Inserted"})
 }
 
 func NewPostTagHandler(tagUsecase usecase.PostTagUsecase) PostTagHandler {

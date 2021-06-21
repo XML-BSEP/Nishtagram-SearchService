@@ -13,6 +13,7 @@ type PostTagRepo interface {
 	GetPostsByHashTag(hashTag string, ctx context.Context) ([]string, error)
 	GetPostTagById(id string, ctx context.Context) domain.PostTag
 	GetPostsBbyHashTagName(hashtag string, ctx context.Context) (*[]domain.PostTag, error)
+	SaveNewPostTag(location domain.PostTag, ctx context.Context) error
 }
 
 type postTagRepo struct {
@@ -72,6 +73,19 @@ func (p postTagRepo) GetPostsBbyHashTagName(hashtag string, ctx context.Context)
 
 	return &posts, nil
 }
+
+func (p postTagRepo) SaveNewPostTag(location domain.PostTag, ctx context.Context) error {
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_, err := p.collection.InsertOne(ctx, location)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 
 func NewPostTagRepo(db *mongo.Client) PostTagRepo {
