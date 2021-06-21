@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"os"
 	"time"
 )
 
@@ -25,8 +26,12 @@ func GetDbName() string {
 
 func NewMongoClient() (*mongo.Client, context.Context) {
 	init_viper()
-
-	mongodb_uri := viper.GetString(`mongodb_uri`)
+	var mongodb_uri string
+	if os.Getenv("DOCKER_ENV") == "" {
+		mongodb_uri = viper.GetString(`mongodb_uri`)
+	} else {
+		mongodb_uri = viper.GetString(`mongodb_docker`)
+	}
 	clientOptions := options.Client().ApplyURI(mongodb_uri)
 	client, err := mongo.NewClient(clientOptions)
 
