@@ -75,17 +75,17 @@ func seedLocation(locationCollection *mongo.Collection, ctx context.Context) {
 
 	_, err := locationCollection.InsertMany(ctx, []interface{} {
 		bson.D{
-			{"location", "Cara Dušana 5, Novi Sad, Srbija"},
+			{"location", "KI"},
 			{"longitude", 50},
 			{"latitude", 60},
 		},
 		bson.D{
-			{"location", "Hadži Ruvimova 10, Novi Sad, Srbija"},
+			{"location", "NS"},
 			{"longitude", 500},
 			{"latitude", 600},
 		},
 		bson.D{
-			{"location", " Gospodara Vučića BB, Beograd, Srbija"},
+			{"location", " SM"},
 			{"longitude", 1},
 			{"latitude", 2},
 		},
@@ -99,9 +99,9 @@ func seedLocation(locationCollection *mongo.Collection, ctx context.Context) {
 
 
 func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Context) {
-	location1 := domain.Location{Location: "Cara Dušana 5, Novi Sad, Srbija", Longitude: 50, Latitude: 60}
-	location2 := domain.Location{Location: "Hadži Ruvimova 10, Novi Sad, Srbija", Longitude: 500, Latitude: 600}
-	location3 := domain.Location{Location: "Gospodara Vučića BB, Beograd, Srbija", Longitude: 1, Latitude: 2}
+	location1 := domain.Location{Location: "KI", Longitude: 50, Latitude: 60}
+	location2 := domain.Location{Location: "NS", Longitude: 500, Latitude: 600}
+	location3 := domain.Location{Location: "SM", Longitude: 1, Latitude: 2}
 
 	_, err := postLocationCollection.InsertMany(ctx, []interface{}{
 		bson.D{
@@ -113,7 +113,7 @@ func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Con
 		bson.D{
 			{"post_id", "d459e0f2-ab61-48e8-a593-29933ce99525"},
 			{"profile_id", "424935b1-766c-4f99-b306-9263731518bc"},
-			{"location", location2},
+			{"location", location1},
 
 		},
 		bson.D{
@@ -125,7 +125,7 @@ func seedPostLocations(postLocationCollection *mongo.Collection, ctx context.Con
 		bson.D{
 			{"post_id", "adfee6f4-fe45-40ad-8f8e-760ec861a35e"},
 			{"profile_id", "43420055-3174-4c2a-9823-a8f060d644c3"},
-			{"location", location3},
+			{"location", location2},
 
 		},
 	})
