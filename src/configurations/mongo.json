@@ -1,0 +1,13 @@
+{
+  "production" : false,
+  "mongodb_docker" : "mongodb://mongosearch:27017",
+  "mongodb_uri" : "mongodb://localhost:27019",
+  "server" : {
+    "address" : "localhost",
+    "port" : 27019
+  },
+  "database" : "search_db",
+  "production_server" : {
+
+  }
+}
